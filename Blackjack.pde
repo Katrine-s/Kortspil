@@ -1,16 +1,20 @@
 PImage card;
+PImage dcard;
 
 String[] tal = new String[52];
 int kuloer =0;
 int cardNumber=1;
 int i=0;
 int randomizer=0;
+int dRandomizer=0;
 int cardsDrawn = 0;
-int cardPosition = 200;
+int cardPosition = 175;
+int dCardPosition = 175;
 boolean blackJack = true;
 int cardCount = 0;
 int cardCounter = 0;
 boolean ace = false;
+boolean dace = false;
 boolean end = false;
 boolean draw = false;
 int dWins=0, wins=0; 
@@ -19,34 +23,38 @@ int dCard;
 void setup()
 {
   size(550, 900);
-  background(180, 180, 180);
+  background(4, 64, 8);
   noStroke();
   frameRate(60);
 }
 
 void tegnSpillePanel() {
-  fill(200, 100, 100);
+  fill(149, 0, 0);
   rect(0, 750, 275, 150);
-  fill(45, 58, 142);
+  fill(45, 58, 144);
   rect(275, 750, 275, 150);
-  fill(180, 180, 180);
+  fill(4, 64, 8);
   rect(235, 75, 50, 30);
   rect(495, 75, 50, 30);
   fill(0);
   textSize(55);
   text("Hit", 100, 840);
   text("Stay", 345, 840);
-  textSize(45);
-  text("Player: "+wins, 35, 720);
+  textSize(40);
+  fill(255, 255, 255);
+  text("Player: "+wins, 40, 720);
   text("Dealer: "+dWins, 305, 720);
   textSize(30);
-  text("Cards value : "+cardCount, 40, 100); 
-  text("Cards value : "+dCard, 300, 100);
+  text("Card's value : "+cardCount, 40, 100); 
+  text("Card's value : "+dCard, 300, 100);
 }
 
 void tegnResetKnap() {
   fill(51, 0, 0);
   rect(0, 750, 550, 150);
+  fill(255, 255, 255);
+  textSize(50);
+  text("Play again", 155, 835);
 }
 
 
@@ -57,7 +65,6 @@ void draw() {
 
     if ((cardCount>=21) || (end==true)) {
       tegnResetKnap();
-      end=true;
     }
 
     if (cardCount == 21) {
@@ -68,12 +75,15 @@ void draw() {
     }
     if ((cardCount>21) && (ace == false)) {
       end = true;
-      textSize(50);
-      text("Loss", 125, 150);
       dWins +=1;
-    } else if ((cardCount>21) && (ace == true)) {
+    } 
+    else if ((cardCount>21) && (ace == true)) {
       cardCount-=10;
       ace = false;
+    }
+    else if ((dCard>21) && (dace == true)) {
+      dCard-=10;
+      dace = false;
     }
   }
   while (cardNumber < 14) {
@@ -89,49 +99,65 @@ void draw() {
 
 void mouseReleased() {
   //stay
-  if ((blackJack)&&(550 >= mouseX)&& (mouseX >= 275)&&(mouseY< 900)&&(mouseY>= 750)&&(end==false)) {
+  if ((blackJack)&&(550 >= mouseX)&& (mouseX >= 275)&&(mouseY< 900)&&(mouseY>= 750)&&(end==false)&&(cardCount!=0)) {
     end=true;
-    int dCard = (int)random(17, 24);
+    tegnResetKnap();
+    while(cardCount>dCard){
+    dHit();
+    fill(4, 64, 8);
+  rect(495, 75, 50, 30);
+    textSize(30);
+  fill(255, 255, 255);
+  text("Card's value : "+dCard, 300, 100);
+    }
 
     if (dCard >21) {
       textSize(25);
-      text("Dealer busted with "+dCard, 80, 300);
-      textSize(20); 
+      text("Dealer busted with "+dCard, 130, 150);
+       
       wins +=1;
-    } else if (dCard==21) {
-      textSize(30);
-      text("Dealer blackJack ", 80, 300);
-      textSize(20);
-      dWins +=1;
-    } else if (cardCount > dCard) {
+    } 
+    else if (dCard==21) {
       textSize(25);
-      text("You won dealer had"+dCard, 80, 300);
-      textSize(20);
-      wins +=1;
-    } else if (cardCount < dCard) {
-      textSize(20);
-      text("You lost dealer had "+dCard, 80, 300);
-      textSize(20);
-      dWins +=1;
-    } else if (cardCount==dCard) {
-      textSize(30);
-      text("It's a tie", 80, 300);
-      textSize(20
+      text("Dealer blackJack ", 150, 150);
       
-      );
       dWins +=1;
+    } 
+    else if (cardCount > dCard) {
+      textSize(25);
+      text("You won dealer had"+dCard, 150, 150);
+      
+      wins +=1;
+    } 
+    else if (cardCount < dCard) {
+      textSize(25);
+      text("You lost dealer had "+dCard, 150, 150);
+      
+      dWins +=1;
+    } 
+    else if (cardCount==dCard) {
+      textSize(25);
+      text("It's a tie", 150, 150);
+      
+      dWins +=1;
+    }
+    if ((cardCount==dCard) && (cardCount<12)){
+      dHit();
     }
   }
 
-  if ((cardCount<21) && (275 >= mouseX)&& (mouseX >= 0)&&(mouseY<900 )&&(mouseY>= 750)&&((end ==true) || blackJack == true)) {
-      blackJack = true;
-      Hit();
-    }
-   
-   else if (((cardCount>=21) && (end==true)) && ((550 >= mouseX)&& (mouseX >= 0)&&(mouseY<900 )&&(mouseY >= 750)&&(end==true))) {
-      reset();
-    }
+//hit
+  else if ((cardCount<21) && (275 >= mouseX)&& (mouseX >= 0)&&(mouseY<900 )&&(mouseY>= 750)&&(end ==false)) {
+    Hit();
+  } 
+}
+
+//reset
+void mousePressed() {
+ if (((end==true)) && ((550 >= mouseX)&& (mouseX >= 0)&&(mouseY<900 )&&(mouseY >= 750)&&(end==true))) {
+    reset();
   }
+}
 
 
 void Hit() {
@@ -171,8 +197,51 @@ void Hit() {
         cardCount += 10;
 
 
-      image(card, 40, cardPosition, 200, 400);
-      cardPosition+=30;
+      image(card, 40, cardPosition, 200, 350);
+      cardPosition+=55;
+    }
+  }
+}
+
+void dHit() {
+
+
+  randomizer = (int)random(0, 52);
+  {
+    dcard=loadImage(tal[randomizer]+".jpg");
+
+
+    if (blackJack) {
+      if (randomizer < 4)
+      {
+        if (dace == false) {
+          {
+            dCard += 11;
+            dace = true;
+          }
+        } else dCard +=1;
+      } else if (randomizer < 8)
+        dCard += 2;  
+      else if (randomizer <12)
+        dCard +=3;
+      else if (randomizer <16)
+        dCard +=4;
+      else if (randomizer <20)
+        dCard += 5;
+      else if (randomizer <24)
+        dCard += 6;
+      else if (randomizer <28)
+        dCard += 7;
+      else if (randomizer <32)
+        dCard += 8;
+      else if (randomizer <36)
+        dCard += 9;
+      else
+        dCard += 10;
+
+
+      image(dcard, 310, dCardPosition, 200, 350);
+      dCardPosition+=55;
     }
   }
 }
@@ -184,9 +253,11 @@ void reset() {
   i=0;
   cardNumber = 1;
   clear();
-  background(180, 180, 180);
+  background(4, 64, 8);
   cardPosition = 200;
   cardCount = 0;
+  dCard=0;
+  dCardPosition=200;
   ace = false;
   end= false;
 }
