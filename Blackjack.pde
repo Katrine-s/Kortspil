@@ -1,6 +1,8 @@
+//Import a billeder
 PImage card;
 PImage dcard;
 
+//variabler og booleans
 String[] tal = new String[52];
 int kuloer =0;
 int cardNumber=1;
@@ -20,6 +22,7 @@ boolean draw = false;
 int dWins=0, wins=0; 
 int dCard;
 
+//setup
 void setup()
 {
   size(550, 900);
@@ -28,6 +31,7 @@ void setup()
   frameRate(60);
 }
 
+//metode for grafikken
 void tegnSpillePanel() {
   fill(149, 0, 0);
   rect(0, 750, 275, 150);
@@ -49,6 +53,7 @@ void tegnSpillePanel() {
   text("Card's value : "+dCard, 300, 100);
 }
 
+//metode for "Play again"-knappen
 void tegnResetKnap() {
   fill(51, 0, 0);
   rect(0, 750, 550, 150);
@@ -57,7 +62,7 @@ void tegnResetKnap() {
   text("Play again", 155, 835);
 }
 
-
+//draw
 void draw() {
 
   if (end==false) {
@@ -67,6 +72,7 @@ void draw() {
       tegnResetKnap();
     }
 
+//forskellige måder man kan vinde på, og hvilke bedskeder der kommer når du eller dealeren vinder
     if (cardCount == 21) {
       textSize(50);
       text("BlackJack", 55, 400);
@@ -86,6 +92,7 @@ void draw() {
       dace = false;
     }
   }
+  //her tildeles alle plaserne i string'en en værdi
   while (cardNumber < 14) {
     tal[i] =cardNumber+""+kuloer;
     i++;
@@ -98,7 +105,7 @@ void draw() {
 }
 
 void mouseReleased() {
-  //stay
+  //her trykker man på stay
   if ((blackJack)&&(550 >= mouseX)&& (mouseX >= 275)&&(mouseY< 900)&&(mouseY>= 750)&&(end==false)&&(cardCount!=0)) {
     end=true;
     tegnResetKnap();
@@ -146,13 +153,13 @@ void mouseReleased() {
     }
   }
 
-//hit
+//her klikker man på hit
   else if ((cardCount<21) && (275 >= mouseX)&& (mouseX >= 0)&&(mouseY<900 )&&(mouseY>= 750)&&(end ==false)) {
     Hit();
   } 
 }
 
-//reset
+//her klikker man på play again
 void mousePressed() {
  if (((end==true)) && ((550 >= mouseX)&& (mouseX >= 0)&&(mouseY<900 )&&(mouseY >= 750)&&(end==true))) {
     reset();
@@ -160,14 +167,15 @@ void mousePressed() {
 }
 
 
+//mekanikken bag hit
 void Hit() {
 
-
+//et tilfældigt kort trækkes
   randomizer = (int)random(0, 52);
   {
     card=loadImage(tal[randomizer]+".jpg");
 
-
+//point tildeles
     if (blackJack) {
       if (randomizer < 4)
       {
@@ -203,6 +211,7 @@ void Hit() {
   }
 }
 
+//dealeren trækker kort
 void dHit() {
 
 
@@ -210,7 +219,7 @@ void dHit() {
   {
     dcard=loadImage(tal[randomizer]+".jpg");
 
-
+//dealeren får sine point
     if (blackJack) {
       if (randomizer < 4)
       {
@@ -246,7 +255,7 @@ void dHit() {
   }
 }
 
-
+//Reset-knappen
 void reset() {
   kuloer= 0;
   cardsDrawn=0;
